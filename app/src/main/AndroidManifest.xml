@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="travel.project">
+    package="sujeet.traveller_guide">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -14,7 +14,7 @@
         android:label="Project"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="travel.project.MainActivity"
+        <activity android:name=".MainActivity"
             android:label="HOME"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -31,9 +31,9 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name="travel.project.SearchListScreen" />
-        <activity android:name="travel.project.Places" />
-        <activity android:name="travel.project.Railway"></activity>
+        <activity android:name=".SearchListScreen" />
+        <activity android:name=".Places" />
+        <activity android:name=".Railway"></activity>
     </application>
 
 </manifest>

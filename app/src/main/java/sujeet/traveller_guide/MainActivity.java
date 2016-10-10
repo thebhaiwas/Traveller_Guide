@@ -1,4 +1,4 @@
-package travel.project;
+package sujeet.traveller_guide;
 
 import android.Manifest;
 import android.content.Context;

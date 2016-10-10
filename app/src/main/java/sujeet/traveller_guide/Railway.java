@@ -1,4 +1,4 @@
-package travel.project;
+package sujeet.traveller_guide;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

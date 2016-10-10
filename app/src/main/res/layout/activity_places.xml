@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="travel.project.Places"
+    tools:context="sujeet.traveller_guide.Places"
               android:background="@drawable/light_blue_gradient">
 
     <ListView
