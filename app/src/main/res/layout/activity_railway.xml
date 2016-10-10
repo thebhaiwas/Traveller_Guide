@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="travel.project.Railway"
+    android:orientation="vertical"
+    android:background="@drawable/light_blue_gradient">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvPNR"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:text="@string/pnr_status"
+            android:background="@drawable/button_background"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/layoutPNR"
+            android:orientation="vertical"
+            android:background="@drawable/button_background">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pnr"
+                android:textSize="25sp"
+                android:hint="@string/enterpnr_here"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnPNR"
+                android:textSize="25sp"
+                android:text="@string/find_pnr_status"
+                android:background="@drawable/button_background"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvPNRresult"
+                android:textSize="25sp"
+                android:text="@string/result_goes_here"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTBS"
+            android:textSize="30sp"
+            android:gravity="center"
+            android:background="@drawable/button_background"
+            android:text="@string/train_between_station"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/layoutTBS"
+            android:orientation="vertical"
+            android:background="@drawable/button_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/station_1"
+                    android:textSize="25sp"
+                    android:layout_weight="1"
+                    android:id="@+id/station1"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/station_2"
+                    android:layout_weight="1"
+                    android:id="@+id/station2"
+                    android:textSize="25sp"/>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnTBS"
+                android:text="@string/find_trains"
+                android:textSize="25sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTBSresult"
+                android:textSize="25sp"
+                android:text="@string/result_goes_here"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+</LinearLayout>

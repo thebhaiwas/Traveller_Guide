@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Traveller Guide</string>
+    <string name="currentLocation">Your Current Location</string>
+    <string name="location_information">Location Information</string>
+    <string name="temperature">Temperature</string>
+    <string name="find_nearby_places">Find Nearby Places</string>
+    <string name="travel_guide">Travel Guide</string>
+    <string name="looking_for">What are you looking for?</string>
+    <string name="pnr_status">PNR Status</string>
+    <string name="enter_pnr">Enter PNR</string>
+    <string name="find_pnr_status">Find PNR Status</string>
+    <string name="train_between_station">Train Between Station</string>
+    <string name="find_trains">Find Trains</string>
+    <string name="january_1_2016">January 1, 2016</string>
+    <string name="_10_10_am">10:10 AM</string>
+    <string name="result_goes_here">Result goes here...</string>
+    <string name="station_1">Station 1</string>
+    <string name="station_2">Station 2</string>
+    <string name="dot">...</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="longitude">longitude</string>
+    <string name="latitude">latitude</string>
+    <string name="last_updated">Last Updated: NA</string>
+    <string name="thermometer">thermometer</string>
+    <string name="name">Name</string>
+    <string name="address">Address</string>
+    <string name="enterpnr_here">EnterPNR here</string>
+    <string name="icon">icon</string>
+</resources>
