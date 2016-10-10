@@ -29,8 +29,8 @@ public class Places extends AppCompatActivity {
     private String type;
     private String url = "https://maps.googleapis.com/maps/api/place/search/json?location=";
     private String key = "AIzaSyAjl_BlNKjkIR-9XM53R2b6XUTkIMZig10";
-    private String lat;
-    private String lon;
+    private float lat;
+    private float lon;
     private String radius = "5000";
     private String finalUrl;
     private String names[];
@@ -54,9 +54,9 @@ public class Places extends AppCompatActivity {
         ttf = Typeface.createFromAsset(getAssets(), "fonta.otf");
 
         type = getIntent().getStringExtra("type");
-        spLocation = getSharedPreferences("LocationPreference", MODE_PRIVATE);
-        lat = spLocation.getString("lat", "");
-        lon = spLocation.getString("lon", "");
+        spLocation = getSharedPreferences("location", MODE_PRIVATE);
+        lat = spLocation.getFloat("lat", 0f);
+        lon = spLocation.getFloat("lon", 0f);
 
         getFinalUrl();
 
@@ -85,17 +85,15 @@ public class Places extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            if(convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.activity_custom, parent, false);
-                namesOf = (TextView) convertView.findViewById(R.id.namesOf);
-                addressOf = (TextView) convertView.findViewById(R.id.addressOf);
+            convertView = getLayoutInflater().inflate(R.layout.activity_custom, parent, false);
+            namesOf = (TextView) convertView.findViewById(R.id.namesOf);
+            addressOf = (TextView) convertView.findViewById(R.id.addressOf);
 
-                namesOf.setTypeface(ttf);
-                addressOf.setTypeface(ttf);
+            namesOf.setTypeface(ttf);
+            addressOf.setTypeface(ttf);
 
-                namesOf.setText(names[position]);
-                addressOf.setText(add[position]);
-            }
+            namesOf.setText(names[position]);
+            addressOf.setText(add[position]);
             return convertView;
         }
     }
@@ -117,7 +115,7 @@ public class Places extends AppCompatActivity {
         finalUrl = sb.toString();
     }
 
-    public void loadList() {
+    private void loadList() {
 
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, finalUrl, null,
                 new Response.Listener<JSONObject>() {
