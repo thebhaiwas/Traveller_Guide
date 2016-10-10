@@ -18,6 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class Railway extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tvPNR;
@@ -154,22 +157,26 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     }
     public void  finalUrl_3()
     {
+        Calendar cal= Calendar.getInstance();
+        SimpleDateFormat sdfDate=new SimpleDateFormat("dd-MM");
+        String currentDate= sdfDate.format(cal.getTime());
         StringBuilder sb3=new StringBuilder("");
         sb3.append(url2);
         sb3.append(code1);
         sb3.append("/dest/");
         sb3.append(code2);
         sb3.append("/date/");
+        sb3.append(currentDate);
         sb3.append("/apikey/");
         sb3.append(key);
         sb3.append("/");
         final3=sb3.toString();
+       // tbsResult.setText(currentDate);
     }
 
     public void getTBS()
     {
         finalUrl1_2();
-        finalUrl_3();
         JsonObjectRequest jsobj1=new JsonObjectRequest(Request.Method.GET, final1, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -177,7 +184,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                         try {
                             JSONArray jsarray = response.getJSONArray("station");
                             station1 = (jsarray.getJSONObject(0)).getString("fullname");
-                            code1=(jsarray.getJSONObject(0)).getString("code");
+                            code1=(jsarray.getJSONObject(0)).getString("code").toLowerCase();
                             stn1.setText(station1);
 
                         } catch (JSONException e) {
@@ -200,7 +207,8 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                         try {
                             JSONArray jsarray = response.getJSONArray("station");
                             station2 = (jsarray.getJSONObject(0)).getString("fullname");
-                            code2= (jsarray.getJSONObject(0)).getString("code");
+                            code2= (jsarray.getJSONObject(0)).getString("code").toLowerCase();
+                           // Toast.makeText(Railway.this,code2,Toast.LENGTH_LONG);
                             stn2.setText(station2);
 
                         } catch (JSONException e) {
@@ -215,20 +223,28 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
             }
         });
         MySingleton.getInstance(this).addToRequestQueue(jsobj2);
+        finalUrl_3();
         JsonObjectRequest jsobj3=new JsonObjectRequest(Request.Method.GET, final3, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray jsarray = response.getJSONArray("train");
-                            trains=new String[jsarray.length()];
-                            for (int i=0;i<jsarray.length();i++)
+                            JSONArray jarray = response.getJSONArray("train");
+                            trains = new String[jarray.length()];
+                            for (int i=0 ; i < jarray.length(); i++)
                             {
-                                JSONObject train=jsarray.getJSONObject(i);
+                                JSONObject train=jarray.getJSONObject(i);
                                 String trainName=train.getString("name");
                                 trains[i]=trainName;
                             }
-
+                           StringBuilder sb=new StringBuilder("");
+                            for (int i=0;i<jarray.length();i++)
+                            {
+                                sb.append(trains[i]);
+                                sb.append(System.getProperty("line.separator"));
+                            }
+                           // sb.append(" "+jarray.length());
+                            tbsResult.setText(sb.toString());
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -238,6 +254,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(Railway.this,error.toString(),Toast.LENGTH_LONG).show();
 
             }
         });
