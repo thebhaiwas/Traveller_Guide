@@ -30,7 +30,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     private EditText pnr,stn1,stn2,trainName_No;
     private Button getPnr,findTrains,spot;
     private String url="http://api.railwayapi.com/pnr_status/pnr/";
-    private String key="piofs2102";
+    private String key="h62q77e2";
     private String url1="http://api.railwayapi.com/suggest_station/name/";
     private String url2="http://api.railwayapi.com/between/source/";
     private String url_spot1="http://api.railwayapi.com/suggest_train/trains/";
