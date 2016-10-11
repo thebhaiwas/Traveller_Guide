@@ -81,7 +81,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         tvStatus.setOnClickListener(this);
     }
 
-    public void getPNRstatus() {
+    private void getPNRstatus() {
 
         pnrNO = Long.parseLong((pnr.getText()).toString());
 
@@ -115,13 +115,13 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Railway.this,error.toString(),Toast.LENGTH_LONG);
+                Toast.makeText(Railway.this,error.toString(),Toast.LENGTH_LONG).show();
             }
         });
         MySingleton.getInstance(this).addToRequestQueue(jsonobjectRequest);
     }
 
-    public void changeVisibility(View view) {
+    private void changeVisibility(View view) {
 
         if(view.getVisibility() == View.VISIBLE)
             view.setVisibility(View.GONE);
@@ -152,8 +152,9 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                 getLiveStatus();
         }
     }
-    public void finalUrl1_2()
-    {
+
+    private void finalUrl1_2() {
+
         String stationName1=(stn1.getText()).toString();
         String stationName2=(stn2.getText()).toString();
         StringBuilder sb=new StringBuilder("");
@@ -172,8 +173,9 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         sb1.append("/");
         final2=sb1.toString();
     }
-    public void  finalUrl_3()
-    {
+
+    private void  finalUrl_3() {
+
         Calendar cal= Calendar.getInstance();
         SimpleDateFormat sdfDate=new SimpleDateFormat("dd-MM");
         String currentDate= sdfDate.format(cal.getTime());
@@ -188,10 +190,10 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         sb3.append(key);
         sb3.append("/");
         final3=sb3.toString();
-       // tbsResult.setText(currentDate);
+        //tbsResult.setText(currentDate);
     }
-    public void finalspot1()
-    {
+    private void finalspot1() {
+
         String tr_N_N=(trainName_No.getText()).toString();
         StringBuilder sb= new StringBuilder("");
         sb.append(url_spot1);
@@ -201,8 +203,8 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         sb.append("/");
         final4=sb.toString();
     }
-    public void finalspot2()
-    {
+    private void finalspot2() {
+
         Calendar cal= Calendar.getInstance();
         SimpleDateFormat sdfDate=new SimpleDateFormat("yyyyMMdd");
         String currentDate=sdfDate.format(cal.getTime());
@@ -217,9 +219,66 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         final5=sb.toString();
     }
 
-    public void getTBS()
-    {
+    private void getTBS() {
+
         finalUrl1_2();
+        finalUrl_3();
+
+        final JsonObjectRequest jsobj3=new JsonObjectRequest(Request.Method.GET, final3, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(Railway.this, "response3", Toast.LENGTH_SHORT).show();
+                            JSONArray jarray = response.getJSONArray("train");
+                            trains = new String[jarray.length()];
+                            for (int i=0 ; i < jarray.length(); i++)
+                            {
+                                JSONObject train=jarray.getJSONObject(i);
+                                String trainName=train.getString("name");
+                                trains[i]=trainName;
+                            }
+                            StringBuilder sb=new StringBuilder("");
+                            for (int i=0;i<jarray.length();i++)
+                            {
+                                sb.append(trains[i]);
+                                sb.append(System.getProperty("line.separator"));
+                            }
+                            //sb.append(" "+jarray.length());
+                            tbsResult.setText(sb.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(Railway.this,error.toString(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+        final JsonObjectRequest jsobj2=new JsonObjectRequest(Request.Method.GET, final2, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsarray = response.getJSONArray("station");
+                            station2 = (jsarray.getJSONObject(0)).getString("fullname");
+                            code2= (jsarray.getJSONObject(0)).getString("code").toLowerCase();
+                            Toast.makeText(Railway.this, "response2", Toast.LENGTH_LONG).show();
+                            stn2.setText(station2);
+                            MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsobj3);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
         JsonObjectRequest jsobj1=new JsonObjectRequest(Request.Method.GET, final1, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -229,11 +288,12 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                             station1 = (jsarray.getJSONObject(0)).getString("fullname");
                             code1=(jsarray.getJSONObject(0)).getString("code").toLowerCase();
                             stn1.setText(station1);
+                            Toast.makeText(Railway.this, "response1", Toast.LENGTH_SHORT).show();
+                            MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsobj2);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -241,69 +301,11 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
 
             }
         });
+
         MySingleton.getInstance(this).addToRequestQueue(jsobj1);
-
-        JsonObjectRequest jsobj2=new JsonObjectRequest(Request.Method.GET, final2, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsarray = response.getJSONArray("station");
-                            station2 = (jsarray.getJSONObject(0)).getString("fullname");
-                            code2= (jsarray.getJSONObject(0)).getString("code").toLowerCase();
-                           // Toast.makeText(Railway.this,code2,Toast.LENGTH_LONG);
-                            stn2.setText(station2);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        MySingleton.getInstance(this).addToRequestQueue(jsobj2);
-        finalUrl_3();
-        JsonObjectRequest jsobj3=new JsonObjectRequest(Request.Method.GET, final3, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jarray = response.getJSONArray("train");
-                            trains = new String[jarray.length()];
-                            for (int i=0 ; i < jarray.length(); i++)
-                            {
-                                JSONObject train=jarray.getJSONObject(i);
-                                String trainName=train.getString("name");
-                                trains[i]=trainName;
-                            }
-                           StringBuilder sb=new StringBuilder("");
-                            for (int i=0;i<jarray.length();i++)
-                            {
-                                sb.append(trains[i]);
-                                sb.append(System.getProperty("line.separator"));
-                            }
-                           // sb.append(" "+jarray.length());
-                            tbsResult.setText(sb.toString());
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Railway.this,error.toString(),Toast.LENGTH_LONG).show();
-
-            }
-        });
-        MySingleton.getInstance(this).addToRequestQueue(jsobj3);
     }
-    public void getLiveStatus()
+
+    private void getLiveStatus()
     {
         finalspot1();
         JsonObjectRequest jsobj1=new JsonObjectRequest(Request.Method.GET, final4, null,
@@ -318,7 +320,6 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -327,6 +328,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
             }
         });
         MySingleton.getInstance(this).addToRequestQueue(jsobj1);
+
         finalspot2();
         JsonObjectRequest jsobj2=new JsonObjectRequest(Request.Method.GET, final5, null,
                 new Response.Listener<JSONObject>() {
@@ -338,7 +340,6 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override
