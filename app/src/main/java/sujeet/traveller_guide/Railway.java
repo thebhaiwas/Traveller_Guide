@@ -24,24 +24,27 @@ import java.util.Calendar;
 public class Railway extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tvPNR;
-    private LinearLayout pnrLayout;
-    private TextView tvTBS;
+    private LinearLayout pnrLayout,liveLayout;
+    private TextView tvTBS,tvStatus;
     private LinearLayout TBSLayout;
-    private EditText pnr,stn1,stn2;
-    private Button getPnr,findTrains;
+    private EditText pnr,stn1,stn2,trainName_No;
+    private Button getPnr,findTrains,spot;
     private String url="http://api.railwayapi.com/pnr_status/pnr/";
     private String key="piofs2102";
     private String url1="http://api.railwayapi.com/suggest_station/name/";
     private String url2="http://api.railwayapi.com/between/source/";
+    private String url_spot1="http://api.railwayapi.com/suggest_train/trains/";
+    private String url_spot2="http://api.railwayapi.com/live/train/";
     private long  pnrNO;
-    private TextView pnr_result,tbsResult;
+    private TextView pnr_result,tbsResult,liveResult;
     String trains[];
     String final1;
     String final2;
-    String final3;
+    String final3,final4,final5;
     String station1;
     String station2;
     String code1,code2;
+    String trainNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,10 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         findTrains.setOnClickListener(this);
         tbsResult= (TextView) findViewById(R.id.tvTBSresult);
 
+        trainName_No= (EditText) findViewById(R.id.live);
+        spot= (Button) findViewById(R.id.btnLIVE);
+        liveResult = (TextView) findViewById(R.id.tvLIVEresult);
+        spot.setOnClickListener(this);
 
         tvPNR = (TextView) findViewById(R.id.tvPNR);
         pnrLayout = (LinearLayout) findViewById(R.id.layoutPNR);
@@ -68,6 +75,10 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         tvTBS = (TextView) findViewById(R.id.tvTBS);
         TBSLayout = (LinearLayout) findViewById(R.id.layoutTBS);
         tvTBS.setOnClickListener(this);
+
+        tvStatus = (TextView) findViewById(R.id.tvStatus);
+        liveLayout = (LinearLayout) findViewById(R.id.layoutLIVE);
+        tvStatus.setOnClickListener(this);
     }
 
     public void getPNRstatus() {
@@ -128,11 +139,17 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
             case R.id.tvTBS:
                 changeVisibility(TBSLayout);
                 break;
+            case R.id.tvStatus:
+                changeVisibility(liveLayout);
+                break;
             case R.id.btnPNR:
                 getPNRstatus();
                 break;
             case R.id.btnTBS:
                 getTBS();
+                break;
+            case R.id.btnLIVE :
+                getLiveStatus();
         }
     }
     public void finalUrl1_2()
@@ -172,6 +189,32 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         sb3.append("/");
         final3=sb3.toString();
        // tbsResult.setText(currentDate);
+    }
+    public void finalspot1()
+    {
+        String tr_N_N=(trainName_No.getText()).toString();
+        StringBuilder sb= new StringBuilder("");
+        sb.append(url_spot1);
+        sb.append(tr_N_N);
+        sb.append("/apikey/");
+        sb.append(key);
+        sb.append("/");
+        final4=sb.toString();
+    }
+    public void finalspot2()
+    {
+        Calendar cal= Calendar.getInstance();
+        SimpleDateFormat sdfDate=new SimpleDateFormat("yyyyMMdd");
+        String currentDate=sdfDate.format(cal.getTime());
+        StringBuilder sb= new StringBuilder("");
+        sb.append(url_spot2);
+        sb.append(trainNumber);
+        sb.append("/doj/");
+        sb.append(currentDate);
+        sb.append("/apikey/");
+        sb.append(key);
+        sb.append("/");
+        final5=sb.toString();
     }
 
     public void getTBS()
@@ -260,5 +303,49 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         });
         MySingleton.getInstance(this).addToRequestQueue(jsobj3);
     }
+    public void getLiveStatus()
+    {
+        finalspot1();
+        JsonObjectRequest jsobj1=new JsonObjectRequest(Request.Method.GET, final4, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsarray = response.getJSONArray("trains");
+                            trainNumber = (jsarray.getJSONObject(0)).getString("number");
+                            trainName_No.setText(trainNumber);
 
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        MySingleton.getInstance(this).addToRequestQueue(jsobj1);
+        finalspot2();
+        JsonObjectRequest jsobj2=new JsonObjectRequest(Request.Method.GET, final5, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                                String position=response.getString("position");
+                                liveResult.setText(position);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        MySingleton.getInstance(this).addToRequestQueue(jsobj2);
+    }
 }
