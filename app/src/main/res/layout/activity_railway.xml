@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/live"
                 android:textSize="25sp"
-                android:hint="Enter Train Name or Number"/>
+                android:hint="Enter Train Name/Number"/>
 
             <Button
                 android:layout_width="match_parent"
