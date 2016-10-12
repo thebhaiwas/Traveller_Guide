@@ -37,14 +37,14 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     private String url_spot2="http://api.railwayapi.com/live/train/";
     private long  pnrNO;
     private TextView pnr_result,tbsResult,liveResult;
-    String trains[];
-    String final1;
-    String final2;
-    String final3,final4,final5;
-    String station1;
-    String station2;
-    String code1,code2;
-    String trainNumber;
+    private String trains[];
+    private String final1;
+    private String final2;
+    private String final3,final4,final5;
+    private String station1;
+    private String station2;
+    private String code1,code2;
+    private String trainNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,10 +176,10 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
 
     private void  finalUrl_3() {
 
-        Calendar cal= Calendar.getInstance();
-        SimpleDateFormat sdfDate=new SimpleDateFormat("dd-MM");
-        String currentDate= sdfDate.format(cal.getTime());
-        StringBuilder sb3=new StringBuilder("");
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd-MM");
+        String currentDate = sdfDate.format(cal.getTime());
+        StringBuilder sb3 = new StringBuilder("");
         sb3.append(url2);
         sb3.append(code1);
         sb3.append("/dest/");
@@ -205,10 +205,10 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     }
     private void finalspot2() {
 
-        Calendar cal= Calendar.getInstance();
-        SimpleDateFormat sdfDate=new SimpleDateFormat("yyyyMMdd");
-        String currentDate=sdfDate.format(cal.getTime());
-        StringBuilder sb= new StringBuilder("");
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyyMMdd");
+        String currentDate = sdfDate.format(cal.getTime());
+        StringBuilder sb = new StringBuilder("");
         sb.append(url_spot2);
         sb.append(trainNumber);
         sb.append("/doj/");
@@ -219,9 +219,8 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         final5=sb.toString();
     }
 
-    private void getTBS() {
+    private void finalTBS() {
 
-        finalUrl1_2();
         finalUrl_3();
 
         final JsonObjectRequest jsobj3=new JsonObjectRequest(Request.Method.GET, final3, null,
@@ -229,7 +228,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Toast.makeText(Railway.this, "response3", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Railway.this, "response3", Toast.LENGTH_SHORT).show();
                             JSONArray jarray = response.getJSONArray("train");
                             trains = new String[jarray.length()];
                             for (int i=0 ; i < jarray.length(); i++)
@@ -256,6 +255,12 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(Railway.this,error.toString(),Toast.LENGTH_LONG).show();
             }
         });
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsobj3);
+    }
+
+    private void getTBS() {
+
+        finalUrl1_2();
 
         final JsonObjectRequest jsobj2=new JsonObjectRequest(Request.Method.GET, final2, null,
                 new Response.Listener<JSONObject>() {
@@ -265,9 +270,9 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                             JSONArray jsarray = response.getJSONArray("station");
                             station2 = (jsarray.getJSONObject(0)).getString("fullname");
                             code2= (jsarray.getJSONObject(0)).getString("code").toLowerCase();
-                            Toast.makeText(Railway.this, "response2", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(Railway.this, "response2", Toast.LENGTH_LONG).show();
                             stn2.setText(station2);
-                            MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsobj3);
+                            finalTBS();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -288,7 +293,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                             station1 = (jsarray.getJSONObject(0)).getString("fullname");
                             code1=(jsarray.getJSONObject(0)).getString("code").toLowerCase();
                             stn1.setText(station1);
-                            Toast.makeText(Railway.this, "response1", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Railway.this, "response1", Toast.LENGTH_SHORT).show();
                             MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsobj2);
 
                         } catch (JSONException e) {
