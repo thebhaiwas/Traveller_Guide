@@ -27,4 +27,5 @@
     <string name="address">Address</string>
     <string name="enterpnr_here">EnterPNR here</string>
     <string name="icon">icon</string>
+    <string name="_10_11_am">10:11 AM</string>
 </resources>

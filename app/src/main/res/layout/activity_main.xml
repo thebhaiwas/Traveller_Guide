@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="100sp"
-            android:text="@string/_10_10_am"
+            android:text="@string/_10_11_am"
             android:layout_gravity="center"
             android:gravity="center_horizontal|bottom"
             android:id="@+id/tvTime"

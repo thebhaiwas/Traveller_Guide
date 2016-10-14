@@ -34,6 +34,8 @@ public class Places extends AppCompatActivity {
     private String radius = "5000";
     private String finalUrl;
     private String names[];
+    private double lati [];
+    private double longi [];
     private String add [] ;
     private SharedPreferences spLocation;
     private ListView listView;
@@ -126,12 +128,20 @@ public class Places extends AppCompatActivity {
                             JSONArray jsArray = response.getJSONArray("results");
                             names = new String[jsArray.length()];
                             add = new String[jsArray.length()];
+                            lati = new double[jsArray.length()];
+                            longi = new double[jsArray.length()];
                             for (int i = 0; i < jsArray.length(); ++i) {
                                 JSONObject jsObject = jsArray.getJSONObject(i);
                                 String name = jsObject.getString("name");
                                 String address = jsObject.getString("vicinity");
                                 names[i] = name;
                                 add[i]=address;
+                                JSONObject jsonObject1 = jsObject.getJSONObject("geometry");
+                                JSONObject jsonObject2 = jsonObject1.getJSONObject("location");
+                                double lati1=jsonObject2.getDouble("lat");
+                                double lat2=jsonObject2.getDouble("lng");
+                                lati[i] = lati1;
+                                longi[i] =  lat2;
                             }
                             Custom custom=new Custom();
                             listView.setAdapter(custom);
