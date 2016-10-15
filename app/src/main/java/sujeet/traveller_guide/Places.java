@@ -1,5 +1,6 @@
 package sujeet.traveller_guide;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,7 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Places extends AppCompatActivity {
+public class Places extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private String type;
     private String url = "https://maps.googleapis.com/maps/api/place/search/json?location=";
@@ -52,6 +54,7 @@ public class Places extends AppCompatActivity {
         setContentView(R.layout.activity_places);
 
         listView = (ListView) findViewById(R.id.lvPlace);
+        listView.setOnItemClickListener(this);
 
         ttf = Typeface.createFromAsset(getAssets(), "fonta.otf");
 
@@ -65,6 +68,18 @@ public class Places extends AppCompatActivity {
         loadList();
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        double x = lati[position];
+        double y = longi[position];
+        String s = names[position];
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        intent.putExtra("lati", x);
+        intent.putExtra("longi",y);
+        intent.putExtra("title", s);
+        startActivity(intent);
     }
 
     public class Custom extends BaseAdapter {
@@ -101,7 +116,7 @@ public class Places extends AppCompatActivity {
     }
 
 
-    public void getFinalUrl() {
+    private void getFinalUrl() {
 
         StringBuilder sb = new StringBuilder("");
         sb.append(url);
