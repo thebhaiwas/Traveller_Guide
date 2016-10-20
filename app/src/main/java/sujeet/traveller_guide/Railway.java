@@ -45,7 +45,6 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     String station2;
     String code1,code2;
     String trainNumber;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -100,13 +99,21 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                     String dateOfj = response.getString("doj");
                     String totalPass = response.getString("total_passengers");
                     String chart = response.getString("chart_prepared");
+                    JSONArray passArray = response.getJSONArray("passengers");
                     StringBuilder sbb = new StringBuilder("");
                     sbb.append("Train No:-" + trainNo + "\n");
                     sbb.append("PNR:-" + pnr_no + "\n");
                     sbb.append("Date of Journey:-" + dateOfj + "\n");
                     sbb.append("Class:-" + cLass + "\n");
-                    sbb.append("Char Prepared:-" + chart + "\n");
-                    sbb.append("No of Passenger:-" + totalPass + "\n");
+                    sbb.append("Chart Prepared:-" + chart + "\n");
+                    sbb.append("No. of Passengers:-" + totalPass + "\n");
+                    sbb.append("Details of passengers:-\n");
+                    for(int i=0;i<passArray.length();i++)
+                    {
+                        sbb.append("no:-" + passArray.getJSONObject(i).getInt("no")+"\n");
+                        sbb.append("Booking status:-" + passArray.getJSONObject(i).getString("booking_status")+"\n");
+                        sbb.append("Current Status" + passArray.getJSONObject(i).getString( "current_status")+"\n");
+                    }
                     pnr_result.setText(sbb.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
