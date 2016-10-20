@@ -2,14 +2,13 @@ package sujeet.traveller_guide;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SearchListScreen extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -49,7 +48,7 @@ public class SearchListScreen extends AppCompatActivity implements AdapterView.O
             else
                 sbb.append('_');
         }
-        Toast.makeText(this, sbb.toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, sbb.toString(), Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(this, Places.class);
         intent.putExtra("type",sbb.toString());
