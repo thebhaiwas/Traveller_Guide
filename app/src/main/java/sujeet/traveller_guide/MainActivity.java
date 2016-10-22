@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,6 +17,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -34,11 +37,14 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -166,6 +172,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         String update = temperature.getString("update", "NA");
         tvTemperature.setText(""+temp+"°");
         tvLastUpdate.setText(update);
+
+        File file = new File(Environment.getExternalStorageDirectory().getPath()+"/saved.png");
+        Picasso.with(getApplicationContext()).load(file).resize(100, 100)
+                .placeholder(R.drawable.noconn).into(ivWeather);
     }
 
     private void startThread() {
@@ -262,8 +272,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         String icon = jsonObject.getString("icon");
                         String imageUrl = "http://openweathermap.org/img/w/"+icon+".png";
                         iconUrl = imageUrl;
-                        Picasso.with(getApplicationContext()).load(imageUrl)
-                                .resize(100, 100).into(ivWeather);
+
+                        saveImage(imageUrl);
                     } else {
                         Picasso.with(getApplicationContext()).load(R.drawable.noconn).
                                 resize(100, 100).into(ivWeather);
@@ -300,6 +310,41 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         });
         MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
+    }
+
+    private void saveImage(String imageUrl) {
+
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        File file = new File(
+                                Environment.getExternalStorageDirectory().getPath()
+                                        + "/saved.png");
+                        try {
+                            file.createNewFile();
+                            FileOutputStream ostream = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.PNG,100,ostream);
+                            ostream.close();
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {}
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {}
+        };
+
+        Picasso.with(getApplicationContext()).load(imageUrl).into(target);
     }
 
     @Override
