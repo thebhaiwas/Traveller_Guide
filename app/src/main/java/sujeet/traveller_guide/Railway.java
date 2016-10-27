@@ -23,12 +23,12 @@ import java.util.Calendar;
 
 public class Railway extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView tvPNR;
-    private LinearLayout pnrLayout,liveLayout;
+    private TextView tvPNR,tvStnCode,tvTrainNo;
+    private LinearLayout pnrLayout,liveLayout,layoutStnCode,layoutTrNo;
     private TextView tvTBS,tvStatus;
     private LinearLayout TBSLayout;
-    private EditText pnr,stn1,stn2,trainName_No;
-    private Button getPnr,findTrains,spot;
+    private EditText pnr,stn1,stn2,trainName_No,stnCode,TrNo;
+    private Button getPnr,findTrains,spot,stCode,TrainNo;
     private String url="http://api.railwayapi.com/pnr_status/pnr/";
     private String key="h62q77e2";
     private String url1="http://api.railwayapi.com/suggest_station/name/";
@@ -36,15 +36,15 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     private String url_spot1="http://api.railwayapi.com/suggest_train/trains/";
     private String url_spot2="http://api.railwayapi.com/live/train/";
     private long  pnrNO;
-    private TextView pnr_result,tbsResult,liveResult;
+    private TextView pnr_result,tbsResult,liveResult,code_result,No_result;
     String trains[];
     String final1;
     String final2;
     String final3,final4,final5;
-    String station1;
+    String station1[];
     String station2;
-    String code1,code2;
-    String trainNumber;
+    String code1[],code2;
+    String trainNumber[],trainName[];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,6 +55,17 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         getPnr= (Button) findViewById(R.id.btnPNR);
         getPnr.setOnClickListener(this);
         pnr_result= (TextView) findViewById(R.id.tvPNRresult);
+
+        stnCode= (EditText) findViewById(R.id.stCode);
+        stCode= (Button) findViewById(R.id.btnStncode);
+        stCode.setOnClickListener(this);
+        code_result= (TextView) findViewById(R.id.tvStnResult);
+
+        TrNo= (EditText) findViewById(R.id.Trno);
+        TrainNo= (Button) findViewById(R.id.btnTrno);
+        TrainNo.setOnClickListener(this);
+        No_result= (TextView) findViewById(R.id.tvTrResult);
+
 
         stn1= (EditText) findViewById(R.id.station1);
         stn2= (EditText) findViewById(R.id.station2);
@@ -70,6 +81,14 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         tvPNR = (TextView) findViewById(R.id.tvPNR);
         pnrLayout = (LinearLayout) findViewById(R.id.layoutPNR);
         tvPNR.setOnClickListener(this);
+
+        tvStnCode= (TextView) findViewById(R.id.stationcode);
+        layoutStnCode= (LinearLayout) findViewById(R.id.layoutstnCode);
+        tvStnCode.setOnClickListener(this);
+
+        tvTrainNo= (TextView) findViewById(R.id.trainNo);
+        layoutTrNo= (LinearLayout) findViewById(R.id.layouttrainNo);
+        tvTrainNo.setOnClickListener(this);
 
         tvTBS = (TextView) findViewById(R.id.tvTBS);
         TBSLayout = (LinearLayout) findViewById(R.id.layoutTBS);
@@ -149,6 +168,12 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
             case R.id.tvStatus:
                 changeVisibility(liveLayout);
                 break;
+            case R.id.stationcode :
+                changeVisibility(layoutStnCode);
+                break;
+            case R.id.trainNo :
+                changeVisibility(layoutTrNo);
+                break;
             case R.id.btnPNR:
                 getPNRstatus();
                 break;
@@ -157,28 +182,27 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.btnLIVE :
                 getLiveStatus();
+                break;
+            case R.id.btnStncode :
+                getStationCode();
+                break;
+            case R.id.btnTrno :
+                getTrainNo();
+
         }
     }
 
     private void finalUrl1_2() {
 
-        String stationName1=(stn1.getText()).toString();
-        String stationName2=(stn2.getText()).toString();
+        String stationName=(stnCode.getText()).toString();
         StringBuilder sb=new StringBuilder("");
         sb.append(url1);
-        sb.append(stationName1);
+        sb.append(stationName);
         sb.append("/apikey/");
         sb.append(key);
         sb.append("/");
         final1=sb.toString();
 
-        StringBuilder sb1=new StringBuilder("");
-        sb1.append(url1);
-        sb1.append(stationName2);
-        sb1.append("/apikey/");
-        sb1.append(key);
-        sb1.append("/");
-        final2=sb1.toString();
     }
 
     private void  finalUrl_3() {
@@ -188,9 +212,9 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         String currentDate= sdfDate.format(cal.getTime());
         StringBuilder sb3=new StringBuilder("");
         sb3.append(url2);
-        sb3.append(code1);
+        sb3.append(stn1.getText().toString());
         sb3.append("/dest/");
-        sb3.append(code2);
+        sb3.append(stn2.getText().toString());
         sb3.append("/date/");
         sb3.append(currentDate);
         sb3.append("/apikey/");
@@ -201,7 +225,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     }
     private void finalspot1() {
 
-        String tr_N_N=(trainName_No.getText()).toString();
+        String tr_N_N=(TrNo.getText()).toString();
         StringBuilder sb= new StringBuilder("");
         sb.append(url_spot1);
         sb.append(tr_N_N);
@@ -217,7 +241,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         String currentDate=sdfDate.format(cal.getTime());
         StringBuilder sb= new StringBuilder("");
         sb.append(url_spot2);
-        sb.append(trainNumber);
+        sb.append(trainName_No.getText().toString());
         sb.append("/doj/");
         sb.append(currentDate);
         sb.append("/apikey/");
@@ -225,7 +249,86 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         sb.append("/");
         final5=sb.toString();
     }
-    private void finalTBS()
+    private void getStationCode()
+    {
+        finalUrl1_2();
+        JsonObjectRequest jsobj1=new JsonObjectRequest(Request.Method.GET, final1, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsarray = response.getJSONArray("station");
+                            station1=new String[jsarray.length()];
+                            code1=new String[jsarray.length()];
+                            for(int i=0;i<jsarray.length();i++)
+                            {
+                                station1[i] = (jsarray.getJSONObject(i)).getString("fullname");
+                                code1[i]=(jsarray.getJSONObject(i)).getString("code").toLowerCase();
+                            }
+                            StringBuilder sb =new StringBuilder("");
+                            for(int i=0;i<jsarray.length();i++)
+                            {
+                                sb.append(station1[i]);
+                                sb.append(System.getProperty("line.separator"));
+                                sb.append(code1[i]);
+                                sb.append(System.getProperty("line.separator"));
+                            }
+                            code_result.setText(sb.toString());
+                            Toast.makeText(Railway.this, "response1", Toast.LENGTH_SHORT).show();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        MySingleton.getInstance(this).addToRequestQueue(jsobj1);
+    }
+    private void getTrainNo()
+    {
+        finalspot1();
+        JsonObjectRequest jsobj1 = new JsonObjectRequest(Request.Method.GET, final4, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsarray = response.getJSONArray("trains");
+                            trainName=new String[jsarray.length()];
+                            trainName=new String[jsarray.length()];
+                            for(int i=0;i<jsarray.length();i++)
+                            {
+                                trainNumber[i] = (jsarray.getJSONObject(i)).getString("number");
+                                trainName[i]=(jsarray.getJSONObject(i)).getString("name");
+                            }
+                            StringBuilder sb=new StringBuilder("");
+                            for(int i=0;i<jsarray.length();i++)
+                            {
+                                sb.append(trainName[i]);
+                                sb.append(System.getProperty("line.separator"));
+                                sb.append(trainNumber[i]);
+                                sb.append(System.getProperty("line.separator"));
+                            }
+                            No_result.setText(sb.toString());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        MySingleton.getInstance(this).addToRequestQueue(jsobj1);
+    }
+
+    private void getTBS()
     {
         finalUrl_3();
         final JsonObjectRequest jsobj3=new JsonObjectRequest(Request.Method.GET, final3, null,
@@ -264,85 +367,11 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     }
 
 
-    private void getTBS() {
-
-        finalUrl1_2();
 
 
 
-        final JsonObjectRequest jsobj2=new JsonObjectRequest(Request.Method.GET, final2, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsarray = response.getJSONArray("station");
-                            station2 = (jsarray.getJSONObject(0)).getString("fullname");
-                            code2= (jsarray.getJSONObject(0)).getString("code").toLowerCase();
-                            Toast.makeText(Railway.this, "response2", Toast.LENGTH_LONG).show();
-                            stn2.setText(station2);
-                            finalTBS();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
 
-            }
-        });
-
-        JsonObjectRequest jsobj1=new JsonObjectRequest(Request.Method.GET, final1, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsarray = response.getJSONArray("station");
-                            station1 = (jsarray.getJSONObject(0)).getString("fullname");
-                            code1=(jsarray.getJSONObject(0)).getString("code").toLowerCase();
-                            stn1.setText(station1);
-                            Toast.makeText(Railway.this, "response1", Toast.LENGTH_SHORT).show();
-                            MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsobj2);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        MySingleton.getInstance(this).addToRequestQueue(jsobj1);
-    }
-
-    private void getLiveStatus() {
-        finalspot1();
-        JsonObjectRequest jsobj1 = new JsonObjectRequest(Request.Method.GET, final4, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsarray = response.getJSONArray("trains");
-                            trainNumber = (jsarray.getJSONObject(0)).getString("number");
-                            trainName_No.setText(trainNumber);
-                            finalSTATUS();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        MySingleton.getInstance(this).addToRequestQueue(jsobj1);
-    }
-
-        private void finalSTATUS() {
+        private void getLiveStatus() {
             finalspot2();
             final JsonObjectRequest jsobj2 = new JsonObjectRequest(Request.Method.GET, final5, null,
                     new Response.Listener<JSONObject>() {
