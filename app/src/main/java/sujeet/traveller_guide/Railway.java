@@ -161,18 +161,39 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.tvPNR:
                 changeVisibility(pnrLayout);
+                TBSLayout.setVisibility(View.GONE);
+                liveLayout.setVisibility(View.GONE);
+                layoutStnCode.setVisibility(View.GONE);
+                layoutTrNo.setVisibility(View.GONE);
                 break;
             case R.id.tvTBS:
                 changeVisibility(TBSLayout);
+                 pnrLayout.setVisibility(View.GONE);
+                liveLayout.setVisibility(View.GONE);
+                layoutStnCode.setVisibility(View.GONE);
+                layoutTrNo.setVisibility(View.GONE);
                 break;
             case R.id.tvStatus:
                 changeVisibility(liveLayout);
+                pnrLayout.setVisibility(View.GONE);
+                TBSLayout.setVisibility(View.GONE);
+                layoutStnCode.setVisibility(View.GONE);
+                layoutTrNo.setVisibility(View.GONE);
+
                 break;
             case R.id.stationcode :
                 changeVisibility(layoutStnCode);
+                pnrLayout.setVisibility(View.GONE);
+                TBSLayout.setVisibility(View.GONE);
+                liveLayout.setVisibility(View.GONE);
+                layoutTrNo.setVisibility(View.GONE);
                 break;
             case R.id.trainNo :
                 changeVisibility(layoutTrNo);
+                pnrLayout.setVisibility(View.GONE);
+                TBSLayout.setVisibility(View.GONE);
+                layoutStnCode.setVisibility(View.GONE);
+                liveLayout.setVisibility(View.GONE);
                 break;
             case R.id.btnPNR:
                 getPNRstatus();
