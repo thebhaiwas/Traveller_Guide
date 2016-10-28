@@ -252,6 +252,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     private void getStationCode()
     {
         finalUrl1_2();
+
         JsonObjectRequest jsobj1=new JsonObjectRequest(Request.Method.GET, final1, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -292,6 +293,7 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
     private void getTrainNo()
     {
         finalspot1();
+
         JsonObjectRequest jsobj1 = new JsonObjectRequest(Request.Method.GET, final4, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -299,7 +301,8 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
                         try {
                             JSONArray jsarray = response.getJSONArray("trains");
                             trainName=new String[jsarray.length()];
-                            trainName=new String[jsarray.length()];
+                            trainNumber=new String[jsarray.length()];
+
                             for(int i=0;i<jsarray.length();i++)
                             {
                                 trainNumber[i] = (jsarray.getJSONObject(i)).getString("number");
