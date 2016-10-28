@@ -1,8 +1,12 @@
 package sujeet.traveller_guide;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,23 +30,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Places extends AppCompatActivity implements AdapterView.OnItemClickListener {
+import java.util.ArrayList;
 
-    private String type;
-    private String url = "https://maps.googleapis.com/maps/api/place/search/json?location=";
-    private String key = "AIzaSyAjl_BlNKjkIR-9XM53R2b6XUTkIMZig10";
-    private float lat;
-    private float lon;
-    private String radius = "5000";
-    private String finalUrl;
+public class Places extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
+
+    private String finalUrl = "";
     private String names[];
-    private double lati [];
-    private double longi [];
-    private String add [] ;
-    private SharedPreferences spLocation;
+    private double lati[];
+    private double longi[];
+    private String add [];
+
+    private TextView refresh;
     private ListView listView;
-    private TextView namesOf;
-    private TextView addressOf;
     private Typeface ttf;
 
     private GoogleApiClient client;
@@ -55,27 +54,158 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
 
         getUI();
 
-        getFinalUrl();
-
-        loadList();
+        setPlaces();
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void getUI() {
+
+        refresh = (TextView) findViewById(R.id.refresh);
         listView = (ListView) findViewById(R.id.lvPlace);
+        refresh.setOnClickListener(this);
         listView.setOnItemClickListener(this);
 
         ttf = Typeface.createFromAsset(getAssets(), "fonta.otf");
+    }
 
-        type = getIntent().getStringExtra("type");
-        spLocation = getSharedPreferences("location", MODE_PRIVATE);
-        lat = spLocation.getFloat("lat", 0f);
-        lon = spLocation.getFloat("lon", 0f);
+    private void setPlaces() {
+
+        DBHandler dbHandler = new DBHandler(getApplicationContext(), null, null, 0);
+        ArrayList<ContentValues> places = dbHandler.getRows(getIntent().getStringExtra("type"));
+
+        names = new String[places.size()];
+        add = new String[places.size()];
+        lati = new double[places.size()];
+        longi = new double[places.size()];
+
+        for(int i=0; i<places.size(); i++) {
+            ContentValues cv = places.get(i);
+            names[i] = cv.getAsString(DBHandler.COL1);
+            add[i] = cv.getAsString(DBHandler.COL2);
+            lati[i] = cv.getAsDouble(DBHandler.COL4);
+            longi[i] = cv.getAsDouble(DBHandler.COL5);
+        }
+
+        Toast.makeText(this, "Query returned "+places.size()+" rows", Toast.LENGTH_SHORT).show();
+
+        Custom custom=new Custom();
+        listView.setAdapter(custom);
+    }
+
+    private void getPlaces() {
+
+        if(!isOnline()) {
+            Toast.makeText(this, "Internet connection required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //deleteOld();
+
+        getFinalUrl();
+
+        addNew();
+    }
+
+    private boolean isOnline() {
+
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    private void deleteOld() {
+
+        DBHandler dbHandler = new DBHandler(getApplicationContext(), null, null, 0);
+        dbHandler.deleteRow(getIntent().getStringExtra("type"));
+    }
+
+    private void getFinalUrl() {
+
+        String url = "https://maps.googleapis.com/maps/api/place/search/json?location=";
+        String key = "AIzaSyAjl_BlNKjkIR-9XM53R2b6XUTkIMZig10";
+        String type = getIntent().getStringExtra("type");
+        SharedPreferences spLocation = getSharedPreferences("location", MODE_PRIVATE);
+        float lat = spLocation.getFloat("lat", 0f);
+        float lon = spLocation.getFloat("lon", 0f);
+        String radius = "5000";
+
+        StringBuilder sb = new StringBuilder("");
+        sb.append(url);
+        sb.append(lat);
+        sb.append(",");
+        sb.append(lon);
+        sb.append("&radius=");
+        sb.append(radius);
+        sb.append("&type=");
+        sb.append(type);
+        sb.append("&key=");
+        sb.append(key);
+
+        finalUrl = sb.toString();
+    }
+
+    private void addNew() {
+
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, finalUrl, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            //Toast.makeText(Places.this, "Response Received", Toast.LENGTH_SHORT).show();
+
+                            JSONArray jsArray = response.getJSONArray("results");
+                            DBHandler dbHandler = new DBHandler(getApplicationContext(), null, null,
+                                    0);
+
+                            Toast.makeText(Places.this, ""+jsArray.length(), Toast.LENGTH_SHORT).show();
+
+                            for (int i = 0; i < jsArray.length(); ++i) {
+
+                                ContentValues cv = new ContentValues();
+
+                                JSONObject jsObject = jsArray.getJSONObject(i);
+                                cv.put(DBHandler.COL1, jsObject.getString("name"));
+                                cv.put(DBHandler.COL2, jsObject.getString("vicinity"));
+
+                                JSONObject jsonObject1 = jsObject.getJSONObject("geometry");
+                                JSONObject jsonObject2 = jsonObject1.getJSONObject("location");
+                                cv.put(DBHandler.COL4, jsonObject2.getDouble("lat"));
+                                cv.put(DBHandler.COL5, jsonObject2.getDouble("lng"));
+
+                                dbHandler.addRow(cv);
+                            }
+
+                            setPlaces();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if(error != null)
+                            Toast.makeText(Places.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest1);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.refresh:
+                getPlaces();
+                break;
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
         double x = lati[position];
         double y = longi[position];
         String s = names[position];
@@ -84,14 +214,6 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
         intent.putExtra("longi",y);
         intent.putExtra("title", s);
         startActivity(intent);
-    }
-
-    private void setPlaces() {
-
-    }
-
-    private void getPlaces() {
-
     }
 
     public class Custom extends BaseAdapter {
@@ -115,8 +237,8 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
         public View getView(int position, View convertView, ViewGroup parent) {
 
             convertView = getLayoutInflater().inflate(R.layout.activity_custom, parent, false);
-            namesOf = (TextView) convertView.findViewById(R.id.namesOf);
-            addressOf = (TextView) convertView.findViewById(R.id.addressOf);
+            TextView namesOf = (TextView) convertView.findViewById(R.id.namesOf);
+            TextView addressOf = (TextView) convertView.findViewById(R.id.addressOf);
 
             namesOf.setTypeface(ttf);
             addressOf.setTypeface(ttf);
@@ -125,65 +247,6 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
             addressOf.setText(add[position]);
             return convertView;
         }
-    }
-
-    private void getFinalUrl() {
-
-        StringBuilder sb = new StringBuilder("");
-        sb.append(url);
-        sb.append(lat + ",");
-        sb.append(lon);
-        sb.append("&radius=");
-        sb.append(radius);
-        sb.append("&type=");
-        sb.append(type);
-        sb.append("&key=");
-        sb.append(key);
-
-        finalUrl = sb.toString();
-    }
-
-    private void loadList() {
-
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, finalUrl, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            //Toast.makeText(Places.this, "Response", Toast.LENGTH_SHORT).show();
-                            JSONArray jsArray = response.getJSONArray("results");
-                            names = new String[jsArray.length()];
-                            add = new String[jsArray.length()];
-                            lati = new double[jsArray.length()];
-                            longi = new double[jsArray.length()];
-                            for (int i = 0; i < jsArray.length(); ++i) {
-                                JSONObject jsObject = jsArray.getJSONObject(i);
-                                String name = jsObject.getString("name");
-                                String address = jsObject.getString("vicinity");
-                                names[i] = name;
-                                add[i]=address;
-                                JSONObject jsonObject1 = jsObject.getJSONObject("geometry");
-                                JSONObject jsonObject2 = jsonObject1.getJSONObject("location");
-                                double lati1=jsonObject2.getDouble("lat");
-                                double lat2=jsonObject2.getDouble("lng");
-                                lati[i] = lati1;
-                                longi[i] =  lat2;
-                            }
-                            Custom custom=new Custom();
-                            listView.setAdapter(custom);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if(error != null)
-                            Toast.makeText(Places.this, error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-        MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest1);
     }
 
     @Override

@@ -7,6 +7,12 @@
     tools:context="sujeet.traveller_guide.Places"
               android:background="@drawable/light_blue_gradient">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="Refresh"
+        android:id="@+id/refresh"/>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
