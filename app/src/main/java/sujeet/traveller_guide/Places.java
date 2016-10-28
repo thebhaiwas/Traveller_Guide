@@ -53,6 +53,16 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_places);
 
+        getUI();
+
+        getFinalUrl();
+
+        loadList();
+
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    private void getUI() {
         listView = (ListView) findViewById(R.id.lvPlace);
         listView.setOnItemClickListener(this);
 
@@ -62,12 +72,6 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
         spLocation = getSharedPreferences("location", MODE_PRIVATE);
         lat = spLocation.getFloat("lat", 0f);
         lon = spLocation.getFloat("lon", 0f);
-
-        getFinalUrl();
-
-        loadList();
-
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -80,6 +84,14 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
         intent.putExtra("longi",y);
         intent.putExtra("title", s);
         startActivity(intent);
+    }
+
+    private void setPlaces() {
+
+    }
+
+    private void getPlaces() {
+
     }
 
     public class Custom extends BaseAdapter {
@@ -114,7 +126,6 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
             return convertView;
         }
     }
-
 
     private void getFinalUrl() {
 
