@@ -87,7 +87,7 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
             longi[i] = cv.getAsDouble(DBHandler.COL5);
         }
 
-        Toast.makeText(this, "Query returned "+places.size()+" rows", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, getIntent().getStringExtra("type"), Toast.LENGTH_SHORT).show();
 
         Custom custom=new Custom();
         listView.setAdapter(custom);
@@ -100,7 +100,7 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
             return;
         }
 
-        //deleteOld();
+        deleteOld();
 
         getFinalUrl();
 
@@ -160,7 +160,7 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
                             DBHandler dbHandler = new DBHandler(getApplicationContext(), null, null,
                                     0);
 
-                            Toast.makeText(Places.this, ""+jsArray.length(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Places.this, ""+jsArray.length(), Toast.LENGTH_SHORT).show();
 
                             for (int i = 0; i < jsArray.length(); ++i) {
 
@@ -169,6 +169,7 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
                                 JSONObject jsObject = jsArray.getJSONObject(i);
                                 cv.put(DBHandler.COL1, jsObject.getString("name"));
                                 cv.put(DBHandler.COL2, jsObject.getString("vicinity"));
+                                cv.put(DBHandler.COL3, getIntent().getStringExtra("type"));
 
                                 JSONObject jsonObject1 = jsObject.getJSONObject("geometry");
                                 JSONObject jsonObject2 = jsonObject1.getJSONObject("location");

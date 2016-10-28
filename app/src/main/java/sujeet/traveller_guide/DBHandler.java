@@ -13,7 +13,7 @@ public class DBHandler  extends SQLiteOpenHelper{
 
     private Context context;
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String DATABASE = "MyDB";
     private static final String TABLE = "Places";
     public static final String COL0 = "Id";
@@ -63,7 +63,7 @@ public class DBHandler  extends SQLiteOpenHelper{
     public ArrayList<ContentValues> getRows(String type) {
 
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cr = db.query(TABLE, COLS, null, null, null, null, null);
+        Cursor cr = db.query(TABLE, COLS, COL3+" = ?", new String[]{type}, null, null, null);
         ArrayList<ContentValues> places = new ArrayList<>();
         for(cr.moveToFirst();!cr.isAfterLast();cr.moveToNext()) {
             ContentValues cv = new ContentValues();
