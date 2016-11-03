@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startService(new Intent(this,MyService.class));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -375,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         ed.putString("city", city);
         ed.putString("country", country);
         ed.commit();
-
+        if(isRunning)
         setLocation();
     }
 
@@ -449,7 +450,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             return;
         }
 
-        locationManager.removeUpdates(this);
+       // locationManager.removeUpdates(this);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
