@@ -12,12 +12,9 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
-import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.squareup.picasso.Picasso;
@@ -32,11 +29,9 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * Created by vikash kumar on 11/2/2016.
- */
 public class MyService extends Service {
-    int time=100000;
+
+    int time = 60 * 60 * 000;
     boolean isRunning=true;
     String finalUrl,type;
     String types[]={"restaurant", "atm", "hospital", "train_station", "airport",
@@ -48,6 +43,7 @@ public class MyService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -73,12 +69,11 @@ public class MyService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
     private void getTemperature() {
 
-        if(!isOnline()) {
-            Toast.makeText(this, "Internet connection is required", Toast.LENGTH_SHORT).show();
+        if(!isOnline())
             return;
-        }
 
         SharedPreferences location = getSharedPreferences("location", MODE_PRIVATE);
         float lat = location.getFloat("lat", 0f);
@@ -111,9 +106,6 @@ public class MyService extends Service {
                         iconUrl = imageUrl;
 
                         saveImage(imageUrl);
-                    } else {
-                       // Picasso.with(getApplicationContext()).load(R.drawable.noconn).
-                             //   resize(100, 100).into(ivWeather);
                     }
 
                     JSONObject main = response.getJSONObject("main");
@@ -132,7 +124,6 @@ public class MyService extends Service {
                     ed.putString("icon", iconUrl);
                     ed.commit();
 
-                    //setTemperature();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -140,15 +131,13 @@ public class MyService extends Service {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-               /* if(error instanceof TimeoutError || error instanceof NoConnectionError)
-                    Toast.makeText(MainActivity.this, "Connection timed out", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(MainActivity.this, "Couldn't fetch temperature", Toast.LENGTH_SHORT).show();
-            */
+                if(error != null)
+                    error.printStackTrace();
             }
         });
         MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
     }
+
     private boolean isOnline() {
 
         ConnectivityManager cm =
@@ -156,6 +145,7 @@ public class MyService extends Service {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
     private void saveImage(String imageUrl) {
 
         Target target = new Target() {
@@ -192,26 +182,27 @@ public class MyService extends Service {
     }
     private void getPlaces() {
 
-        if(!isOnline()) {
-            Toast.makeText(this, "Internet connection required", Toast.LENGTH_SHORT).show();
+        if(!isOnline())
             return;
-        }
-        for(int i=0;i<8;i++)
-        {
-            type=types[i];
+
+        for(int i = 0; i < types.length; i++) {
+
+            type = types[i];
+
             deleteOld();
 
             getFinalUrl();
 
             addNew();
         }
-
     }
+
     private void deleteOld() {
 
         DBHandler dbHandler = new DBHandler(getApplicationContext(), null, null, 0);
         dbHandler.deleteRow(type);
     }
+
     private void getFinalUrl() {
 
         String url = "https://maps.googleapis.com/maps/api/place/search/json?location=";
@@ -235,6 +226,7 @@ public class MyService extends Service {
 
         finalUrl = sb.toString();
     }
+
     private void addNew() {
 
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, finalUrl, null,
@@ -243,13 +235,9 @@ public class MyService extends Service {
                     public void onResponse(JSONObject response) {
                         try {
 
-                            //Toast.makeText(Places.this, "Response Received", Toast.LENGTH_SHORT).show();
-
                             JSONArray jsArray = response.getJSONArray("results");
                             DBHandler dbHandler = new DBHandler(getApplicationContext(), null, null,
                                     0);
-
-                            //Toast.makeText(Places.this, ""+jsArray.length(), Toast.LENGTH_SHORT).show();
 
                             for (int i = 0; i < jsArray.length(); ++i) {
 
@@ -268,7 +256,6 @@ public class MyService extends Service {
                                 dbHandler.addRow(cv);
                             }
 
-                           // setPlaces();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -277,12 +264,10 @@ public class MyService extends Service {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                      //  if(error != null)
-                          //  Toast.makeText(Places.this, error.toString(), Toast.LENGTH_LONG).show();
+                        if(error != null)
+                            error.printStackTrace();
                     }
                 });
         MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest1);
     }
-
-
 }
