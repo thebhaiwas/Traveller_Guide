@@ -99,7 +99,8 @@ public class MyService extends Service {
 
                     String iconUrl = "";
                     JSONArray weather = response.getJSONArray("weather");
-                    if(weather!=null && weather.length()>0) {
+
+                    if(weather != null && weather.length() > 0) {
                         JSONObject jsonObject = weather.getJSONObject(0);
                         String icon = jsonObject.getString("icon");
                         String imageUrl = "http://openweathermap.org/img/w/"+icon+".png";

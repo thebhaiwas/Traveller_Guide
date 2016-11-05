@@ -5,53 +5,120 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SearchListScreen extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class SearchListScreen extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView tvTitle;
-    private ListView nearbyPlaces;
-    private ArrayAdapter<String> placesAdapter;
-    private String places[] = {"Restaurant", "Atm", "Hospital", "Train Station", "Airport",
-            "Movie Theater","Police","Park"};
+    private TextView tvRestaurant;
+    private TextView tvPolice;
+    private TextView tvRailway;
+    private TextView tvMovie;
+    private TextView tvPark;
+    private TextView tvAtm;
+    private TextView tvAirport;
+    private TextView tvHospital;
+
+    private LinearLayout lvRestaurant;
+    private LinearLayout lvPolice;
+    private LinearLayout lvRailway;
+    private LinearLayout lvMovie;
+    private LinearLayout lvPark;
+    private LinearLayout lvAtm;
+    private LinearLayout lvAirport;
+    private LinearLayout lvHospital;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_list_screen);
+        setContentView(R.layout.activity_search_list);
 
-        tvTitle = (TextView) findViewById(R.id.tvTitle);
-        nearbyPlaces = (ListView) findViewById(R.id.lvNearbyPlaces);
+        tvRestaurant = (TextView) findViewById(R.id.tRe);
+        tvPolice = (TextView) findViewById(R.id.tPo);
+        tvAirport = (TextView) findViewById(R.id.tAi);
+        tvAtm = (TextView) findViewById(R.id.tAt);
+        tvMovie = (TextView) findViewById(R.id.tMo);
+        tvHospital = (TextView) findViewById(R.id.tHo);
+        tvPark = (TextView) findViewById(R.id.tPa);
+        tvRailway = (TextView) findViewById(R.id.tRa);
+
+        lvRestaurant = (LinearLayout) findViewById(R.id.restaurant);
+        lvPolice = (LinearLayout) findViewById(R.id.police);
+        lvAirport = (LinearLayout) findViewById(R.id.airport);
+        lvAtm = (LinearLayout) findViewById(R.id.atm);
+        lvMovie = (LinearLayout) findViewById(R.id.movie);
+        lvHospital = (LinearLayout) findViewById(R.id.hospital);
+        lvPark = (LinearLayout) findViewById(R.id.park);
+        lvRailway = (LinearLayout) findViewById(R.id.railway);
+
+        lvRailway.setOnClickListener(this);
+        lvPark.setOnClickListener(this);
+        lvAirport.setOnClickListener(this);
+        lvPolice.setOnClickListener(this);
+        lvRestaurant.setOnClickListener(this);
+        lvAtm.setOnClickListener(this);
+        lvHospital.setOnClickListener(this);
+        lvMovie.setOnClickListener(this);
 
         Typeface type = Typeface.createFromAsset(getAssets(), "fonta.otf");
-        tvTitle.setTypeface(type);
-
-        placesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, places);
-        nearbyPlaces.setAdapter(placesAdapter);
-        nearbyPlaces.setOnItemClickListener(this);
+        tvRestaurant.setTypeface(type);
+        tvRailway.setTypeface(type);
+        tvMovie.setTypeface(type);
+        tvAirport.setTypeface(type);
+        tvPark.setTypeface(type);
+        tvHospital.setTypeface(type);
+        tvAtm.setTypeface(type);
+        tvPolice.setTypeface(type);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onClick(View v) {
 
-        StringBuilder sbb = new StringBuilder("");
-        String s = places[position];
-        for(int i=0; i<s.length(); i++) {
-            if(s.charAt(i)>='A' && s.charAt(i)<='Z')
-                sbb.append((char)(s.charAt(i)+32));
-            else if(s.charAt(i) != ' ')
-                sbb.append(s.charAt(i));
-            else
-                sbb.append('_');
+        String s = "";
+        Intent intent;
+        boolean flag = false;
+
+        switch (v.getId()) {
+            case R.id.railway:
+                s = "train_station";
+                flag = true;
+                break;
+            case R.id.restaurant:
+                s = "restaurant";
+                flag = true;
+                break;
+            case R.id.park:
+                s = "park";
+                flag = true;
+                break;
+            case R.id.atm:
+                s = "atm";
+                flag = true;
+                break;
+            case R.id.hospital:
+                s = "hospital";
+                flag = true;
+                break;
+            case R.id.police:
+                s = "police";
+                flag = true;
+                break;
+            case R.id.movie:
+                s = "movie_theater";
+                flag = true;
+                break;
+            case R.id.airport:
+                s = "airport";
+                flag = true;
+                break;
         }
-        //Toast.makeText(this, sbb.toString(), Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(this, Places.class);
-        intent.putExtra("type",sbb.toString());
+        if(!flag)
+            return;
+
+        intent = new Intent(this, Places.class);
+        intent.putExtra("type", s);
         startActivity(intent);
     }
 }
