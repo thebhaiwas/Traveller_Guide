@@ -1,7 +1,11 @@
 package sujeet.traveller_guide;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +54,12 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_railway);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar_2);
+        setSupportActionBar(toolbar);
+        ActionBar ab=getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+
 
         pnr=(EditText) findViewById(R.id.pnr);
         getPnr= (Button) findViewById(R.id.btnPNR);
@@ -416,5 +426,20 @@ public class Railway extends AppCompatActivity implements View.OnClickListener {
             });
             MySingleton.getInstance(this).addToRequestQueue(jsobj2);
         }
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.float_menu_2,menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.action_settings :
+                return true;
+            default:
+                return  super.onOptionsItemSelected(item);
+        }
+    }
 
 }

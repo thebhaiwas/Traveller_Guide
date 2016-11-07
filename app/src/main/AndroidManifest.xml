@@ -47,7 +47,14 @@
                 android:value=".SearchListScreen"/>
         </activity>
 
-        <activity android:name=".Railway"/>
+        <activity
+            android:name=".Railway"
+            android:label="Railway"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
