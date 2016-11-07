@@ -21,6 +21,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -84,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar myToolbar= (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
 
         if(!isOnline())
             Toast.makeText(getApplicationContext(), "Internet connection is required", Toast.LENGTH_SHORT).show();
@@ -468,5 +473,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         client.disconnect();
 
         super.onDestroy();
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.float_menu,menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId()){
+            case R.id.action_settings :
+                return true;
+            case R.id.action_refresh :
+                getTemperature();
+                return true;
+            default:
+                return  super.onOptionsItemSelected(item);
+        }
     }
 }

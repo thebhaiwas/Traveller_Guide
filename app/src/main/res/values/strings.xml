@@ -34,4 +34,6 @@
     <string name="find_code">Find Code</string>
     <string name="get_train_no">Get Train No</string>
     <string name="enter_train_name">Enter Train Name</string>
+    <string name="refresh">refresh</string>
+    <string name="setting">setting</string>
 </resources>
