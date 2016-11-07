@@ -3,9 +3,10 @@ package sujeet.traveller_guide;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,6 +36,9 @@ public class SearchListScreen extends AppCompatActivity implements View.OnClickL
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_list);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar_2);
+        setSupportActionBar(toolbar);
 
         tvRestaurant = (TextView) findViewById(R.id.tRe);
         tvPolice = (TextView) findViewById(R.id.tPo);
@@ -122,5 +126,21 @@ public class SearchListScreen extends AppCompatActivity implements View.OnClickL
         intent = new Intent(this, Places.class);
         intent.putExtra("type", s);
         startActivity(intent);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.float_menu_2,menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.action_settings :
+                return true;
+            default:
+                return  super.onOptionsItemSelected(item);
+        }
     }
 }

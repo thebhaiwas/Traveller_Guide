@@ -18,6 +18,7 @@
         android:label="Project"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <activity
             android:name=".MainActivity"
             android:label="HOME"
@@ -28,7 +29,15 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".SearchListScreen"/>
+
+        <activity android:name=".SearchListScreen"
+                  android:label="Pick One!"
+                  android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
+
         <activity
             android:name=".Places"
             android:label="Search List"
@@ -37,7 +46,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SearchListScreen"/>
         </activity>
+
         <activity android:name=".Railway"/>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -54,6 +65,7 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
+
     </application>
 
 </manifest>
