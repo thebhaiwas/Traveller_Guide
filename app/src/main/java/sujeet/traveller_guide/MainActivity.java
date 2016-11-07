@@ -83,12 +83,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        startService(new Intent(this,MyService.class));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar myToolbar= (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
+        startService(new Intent(this,MyService.class));
 
         if(!isOnline())
             Toast.makeText(getApplicationContext(), "Internet connection is required", Toast.LENGTH_SHORT).show();
@@ -189,8 +191,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         isRunning = true;
         handler = new Handler();
         thread = new Thread(new Runnable() {
+
             @Override
             public void run() {
+
                 while (isRunning) {
                     handler.post(new Runnable() {
                         @Override
@@ -199,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         }
                     });
                     try {
-                        Thread.sleep(30*1000);
+                        Thread.sleep(3 * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -265,15 +269,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, sbb.toString(),
                 null, new Response.Listener<JSONObject>() {
+
             @Override
             public void onResponse(JSONObject response) {
+
                 try {
                     if(response == null)
                         return;
 
                     String iconUrl = "";
                     JSONArray weather = response.getJSONArray("weather");
+
                     if(weather!=null && weather.length()>0) {
+
                         JSONObject jsonObject = weather.getJSONObject(0);
                         String icon = jsonObject.getString("icon");
                         String imageUrl = "http://openweathermap.org/img/w/"+icon+".png";
@@ -302,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     ed.commit();
 
                     setTemperature();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -315,15 +324,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     Toast.makeText(MainActivity.this, "Couldn't fetch temperature", Toast.LENGTH_SHORT).show();
             }
         });
+
         MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
     }
 
     private void saveImage(String imageUrl) {
 
         Target target = new Target() {
+
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+
                 new Thread(new Runnable() {
+
                     @Override
                     public void run() {
 
@@ -412,12 +425,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.ivWeather:
-                break;
-            case R.id.tvTemperature:
-                break;
-            case R.id.ivThermometer:
-                break;
+
             case R.id.btnFindNearbyPlaces:
                 Intent nearbyIntent = new Intent(this, SearchListScreen.class);
                 startActivity(nearbyIntent);
@@ -426,13 +434,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 Intent travelIntent = new Intent(this, Railway.class);
                 startActivity(travelIntent);
                 break;
-            case R.id.tvTime:
-                setTime();
-                break;
-            case R.id.tvDate:
-                setTime();
-                break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+
+        if(thread != null)
+            isRunning = true;
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+
+        isRunning = false;
+        super.onPause();
     }
 
     @Override
@@ -471,12 +488,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         super.onDestroy();
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.float_menu,menu);
         return true;
     }
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
         switch(item.getItemId()){
             case R.id.action_settings :
                 return true;
