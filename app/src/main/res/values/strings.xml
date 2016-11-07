@@ -43,4 +43,6 @@
     <string name="hotel">Hotel</string>
     <string name="park">Park</string>
     <string name="atm">ATM</string>
+    <string name="action_setting">action_setting</string>
+    <string name="action_refresh">action_refresh</string>
 </resources>

@@ -17,7 +17,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Project"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".MainActivity"
             android:label="HOME"
@@ -29,7 +29,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchListScreen"/>
-        <activity android:name=".Places"/>
+        <activity
+            android:name=".Places"
+            android:label="Search List"
+            android:parentActivityName=".SearchListScreen">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SearchListScreen"/>
+        </activity>
         <activity android:name=".Railway"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
