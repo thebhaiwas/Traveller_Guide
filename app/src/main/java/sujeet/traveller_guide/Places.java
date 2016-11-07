@@ -9,11 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -55,10 +51,7 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_places);
-        Toolbar myToolbar= (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        ActionBar ab= getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+
         getUI();
 
         setPlaces();
@@ -66,16 +59,11 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.float_menu,menu);
-        return true;
-    }
-
     private void getUI() {
 
-
+        refresh = (TextView) findViewById(R.id.refresh);
         listView = (ListView) findViewById(R.id.lvPlace);
+        refresh.setOnClickListener(this);
         listView.setOnItemClickListener(this);
 
         ttf = Typeface.createFromAsset(getAssets(), "fonta.otf");
@@ -209,7 +197,11 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.refresh:
+                getPlaces();
+                break;
+        }
     }
 
     @Override
@@ -298,17 +290,5 @@ public class Places extends AppCompatActivity implements AdapterView.OnItemClick
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
-    }
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId()){
-            case R.id.action_settings :
-                return true;
-            case R.id.action_refresh :
-                getPlaces();
-                return true;
-            default:
-                return  super.onOptionsItemSelected(item);
-        }
     }
 }

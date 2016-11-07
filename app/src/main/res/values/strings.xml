@@ -34,14 +34,13 @@
     <string name="find_code">Find Code</string>
     <string name="get_train_no">Get Train No</string>
     <string name="enter_train_name">Enter Train Name</string>
-    <string name="restaurent">restaurent</string>
-    <string name="railway_station">railway_station</string>
-    <string name="park">park</string>
-    <string name="atm">atm</string>
-    <string name="movie_theater">movie_theater</string>
-    <string name="police_station">police_station</string>
-    <string name="airport">airport</string>
-    <string name="hospital">hospital</string>
-    <string name="refresh">refresh</string>
-    <string name="setting">setting</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="railway_station">Railway Station</string>
+    <string name="hospital">Hospital</string>
+    <string name="airport">Airport</string>
+    <string name="police_station">Police Station</string>
+    <string name="movie_theater">Movie Theater</string>
+    <string name="hotel">Hotel</string>
+    <string name="park">Park</string>
+    <string name="atm">ATM</string>
 </resources>
