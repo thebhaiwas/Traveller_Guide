@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,7 +23,6 @@ public class SearchListScreen extends AppCompatActivity implements AdapterView.O
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_list_screen);
-
 
         tvTitle = (TextView) findViewById(R.id.tvTitle);
         nearbyPlaces = (ListView) findViewById(R.id.lvNearbyPlaces);
@@ -57,5 +54,4 @@ public class SearchListScreen extends AppCompatActivity implements AdapterView.O
         intent.putExtra("type",sbb.toString());
         startActivity(intent);
     }
-
 }
