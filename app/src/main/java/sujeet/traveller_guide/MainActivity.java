@@ -20,13 +20,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.SimpleDrawerListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +60,9 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener {
 
+    private String navigation_list[] = {"Travel Guide","Near By Places"};
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
     private TextView tvCity;
     private TextView tvCountry;
     private TextView tvTime;
@@ -86,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mDrawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList= (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,navigation_list));
+       // mDrawerList.setOnItemClickListener(new SimpleDrawerListener());
 
         Toolbar myToolbar= (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -506,5 +517,45 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             default:
                 return  super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction2 = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://sujeet.traveller_guide/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction2);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction2 = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://sujeet.traveller_guide/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction2);
+        client.disconnect();
     }
 }
