@@ -59,9 +59,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, View.OnClickListener {
 
-    private String navigation_list[] = {"Travel Guide","Near By Places"};
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private String navigation_list[] = {"Rail Guide","Nearby Places"};
     private TextView tvCity;
     private TextView tvCountry;
     private TextView tvTime;
@@ -71,11 +69,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private TextView tvTemperature;
     private TextView tvLastUpdate;
 
-    private ImageView ivThermo;
     private ImageView ivWeather;
-
-    private Button btnNearbyPlaces;
-    private Button btnTravelGuide;
 
     private LocationManager locationManager;
     private Handler handler;
@@ -93,22 +87,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDrawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList= (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.support_simple_spinner_dropdown_item, navigation_list));
-       // mDrawerList.setOnItemClickListener(new SimpleDrawerListener());
-
-        Toolbar myToolbar= (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-
-        startService(new Intent(this, MyService.class));
-
-        if(!isOnline())
-            Toast.makeText(getApplicationContext(), "Internet connection is required",
-                    Toast.LENGTH_SHORT).show();
-
         getUI();
+
+        initialize();
 
         setTime();
 
@@ -123,12 +104,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         registerLocationListener();
+
+        startService(new Intent(this, MyService.class));
     }
 
     private void getUI() {
 
+        Toolbar myToolbar= (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        DrawerLayout mDrawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
+        ListView mDrawerList= (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.support_simple_spinner_dropdown_item, navigation_list));
+        //mDrawerList.setOnItemClickListener(new SimpleDrawerListener());
+
         ivWeather = (ImageView) findViewById(R.id.ivWeather);
-        ivThermo = (ImageView) findViewById(R.id.ivThermometer);
         tvLastUpdate = (TextView) findViewById(R.id.tvLastUpdate);
         tvCity = (TextView) findViewById(R.id.tvCity);
         tvCountry = (TextView) findViewById(R.id.tvCountry);
@@ -137,10 +128,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvDate = (TextView) findViewById(R.id.tvDate);
         tvTemperature = (TextView) findViewById(R.id.tvTemperature);
-        btnNearbyPlaces = (Button) findViewById(R.id.btnFindNearbyPlaces);
-        btnTravelGuide = (Button) findViewById(R.id.btnTravelGuide);
+
+        ImageView ivThermo = (ImageView) findViewById(R.id.ivThermometer);
+
+        Button btnNearbyPlaces = (Button) findViewById(R.id.btnFindNearbyPlaces);
+        Button btnTravelGuide = (Button) findViewById(R.id.btnTravelGuide);
+
+        btnNearbyPlaces.setOnClickListener(this);
+        btnTravelGuide.setOnClickListener(this);
 
         Typeface type = Typeface.createFromAsset(getAssets(), "fonta.otf");
+
         tvLastUpdate.setTypeface(type);
         tvCity.setTypeface(type);
         tvCountry.setTypeface(type);
@@ -149,16 +147,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         tvTime.setTypeface(type);
         tvDate.setTypeface(type);
         tvTemperature.setTypeface(type);
+
         btnNearbyPlaces.setTypeface(type);
         btnTravelGuide.setTypeface(type);
+    }
 
-        ivWeather.setOnClickListener(this);
-        tvTemperature.setOnClickListener(this);
-        ivThermo.setOnClickListener(this);
-        tvTime.setOnClickListener(this);
-        tvDate.setOnClickListener(this);
-        btnNearbyPlaces.setOnClickListener(this);
-        btnTravelGuide.setOnClickListener(this);
+    private void initialize() {
+
+        if(!isOnline())
+            Toast.makeText(getApplicationContext(), "Internet connection is required",
+                    Toast.LENGTH_SHORT).show();
+        else {
+            SharedPreferences lastTimeAbsolute = getSharedPreferences("lasttimeabs", MODE_PRIVATE);
+            long timeLast = lastTimeAbsolute.getLong("time",0);
+            long timeNow = System.currentTimeMillis();
+            if(timeLast - timeNow > 10*1000) {
+                getTemperature();
+                SharedPreferences.Editor ed = lastTimeAbsolute.edit();
+                ed.putLong("lasttimeabs", timeNow);
+                ed.commit();
+            }
+        }
     }
 
     private void setTime() {
@@ -483,7 +492,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             return;
         }
 
-       // locationManager.removeUpdates(this);
+        locationManager.removeUpdates(this);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
