@@ -46,8 +46,10 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         new Thread(new Runnable() {
+
             @Override
             public void run() {
+
                 while(isRunning)
                 {
                     getTemperature();

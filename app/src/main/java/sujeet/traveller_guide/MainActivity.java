@@ -87,9 +87,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getUI();
+        if(!isOnline())
+            Toast.makeText(getApplicationContext(), "Internet connection is required",
+                    Toast.LENGTH_SHORT).show();
 
-        initialize();
+        getUI();
 
         setTime();
 
@@ -150,24 +152,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         btnNearbyPlaces.setTypeface(type);
         btnTravelGuide.setTypeface(type);
-    }
-
-    private void initialize() {
-
-        if(!isOnline())
-            Toast.makeText(getApplicationContext(), "Internet connection is required",
-                    Toast.LENGTH_SHORT).show();
-        else {
-            SharedPreferences lastTimeAbsolute = getSharedPreferences("lasttimeabs", MODE_PRIVATE);
-            long timeLast = lastTimeAbsolute.getLong("time",0);
-            long timeNow = System.currentTimeMillis();
-            if(timeLast - timeNow > 10*1000) {
-                getTemperature();
-                SharedPreferences.Editor ed = lastTimeAbsolute.edit();
-                ed.putLong("lasttimeabs", timeNow);
-                ed.commit();
-            }
-        }
     }
 
     private void setTime() {
@@ -416,8 +400,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         ed.putString("city", city);
         ed.putString("country", country);
         ed.commit();
+
         if(isRunning)
-        setLocation();
+            setLocation();
     }
 
     @Override
