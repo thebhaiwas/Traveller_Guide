@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context="sujeet.traveller_guide.Places"
     android:background="@drawable/light_blue_gradient">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -17,7 +18,6 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         xmlns:android="http://schemas.android.com/apk/res/android"
         />
-
 
     <ListView
         android:layout_width="match_parent"
