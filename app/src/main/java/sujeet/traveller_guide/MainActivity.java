@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             Toast.makeText(getApplicationContext(), "Internet connection is required",
                     Toast.LENGTH_SHORT).show();
 
+        startService(new Intent(this, MyService.class));
+
         getUI();
 
         setTime();
@@ -106,8 +108,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         registerLocationListener();
-
-        startService(new Intent(this, MyService.class));
     }
 
     private void getUI() {
