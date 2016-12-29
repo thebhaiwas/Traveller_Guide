@@ -95,16 +95,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         mDrawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList= (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,navigation_list));
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.support_simple_spinner_dropdown_item, navigation_list));
        // mDrawerList.setOnItemClickListener(new SimpleDrawerListener());
 
         Toolbar myToolbar= (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        startService(new Intent(this,MyService.class));
+        startService(new Intent(this, MyService.class));
 
         if(!isOnline())
-            Toast.makeText(getApplicationContext(), "Internet connection is required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Internet connection is required",
+                    Toast.LENGTH_SHORT).show();
 
         getUI();
 
@@ -453,6 +455,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         if(thread != null)
             isRunning = true;
+        startThread();
         super.onResume();
     }
 
@@ -521,6 +524,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onStart() {
+
         super.onStart();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -541,6 +545,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onStop() {
+
         super.onStop();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
