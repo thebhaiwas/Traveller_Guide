@@ -31,11 +31,12 @@ import java.util.Calendar;
 
 public class MyService extends Service {
 
-    int time = 60 * 60 * 000;
+    int time = 60 * 60 * 1000;
     boolean isRunning=true;
     String finalUrl,type;
     String types[]={"restaurant", "atm", "hospital", "train_station", "airport",
             "movie_theater","police","park"};
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -57,7 +58,6 @@ public class MyService extends Service {
                         e.printStackTrace();
                     }
                 }
-
             }
         }).start();
 
@@ -91,8 +91,10 @@ public class MyService extends Service {
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, sbb.toString(),
                 null, new Response.Listener<JSONObject>() {
+
             @Override
             public void onResponse(JSONObject response) {
+
                 try {
                     if(response == null)
                         return;
@@ -129,6 +131,7 @@ public class MyService extends Service {
                     e.printStackTrace();
                 }
             }
+
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -136,6 +139,7 @@ public class MyService extends Service {
                     error.printStackTrace();
             }
         });
+
         MySingleton.getInstance(this).addToRequestQueue(jsObjRequest);
     }
 
@@ -230,8 +234,9 @@ public class MyService extends Service {
 
     private void addNew() {
 
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, finalUrl, null,
-                new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, finalUrl,
+                null, new Response.Listener<JSONObject>() {
+
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -262,13 +267,17 @@ public class MyService extends Service {
                         }
                     }
                 },
+
                 new Response.ErrorListener() {
+
                     @Override
                     public void onErrorResponse(VolleyError error) {
+
                         if(error != null)
                             error.printStackTrace();
                     }
                 });
+
         MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest1);
     }
 }

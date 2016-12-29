@@ -19,6 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
+        <service android:enabled="true" android:name=".MyService"/>
+
         <activity
             android:name=".MainActivity"
             android:label="HOME"
