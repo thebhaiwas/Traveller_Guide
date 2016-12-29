@@ -130,6 +130,7 @@ public class MyService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
 
         }, new Response.ErrorListener() {
@@ -156,7 +157,9 @@ public class MyService extends Service {
         Target target = new Target() {
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+
                 new Thread(new Runnable() {
+
                     @Override
                     public void run() {
 
@@ -239,6 +242,7 @@ public class MyService extends Service {
 
                     @Override
                     public void onResponse(JSONObject response) {
+
                         try {
 
                             JSONArray jsArray = response.getJSONArray("results");
